@@ -27,7 +27,10 @@ io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId) => {
     socket.join(roomId);
     // send to everyone in the room except sender
-    socket.broadcast.emit("user-connected", userId);
+    socket.to(roomId).emit("user-connected", userId);
+    socket.on("disconnect", () => {
+      socket.to(roomId).emit("user-disconnected", userId);
+    });
   });
 });
 server.listen(3000);
